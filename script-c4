@@ -1,0 +1,46 @@
+#!/bin/bash
+
+
+buff=( optimal )
+mp=(m)
+min=(0.1 2.1 4.5 0.5 0.9 1.3 1.7 2.5 2.9 3.3 3.7 4.1 4.9)
+max=(2.1 4.1 6.5 2.5 2.9 3.3 3.7 4.5 4.9 5.3 5.7 6.1 6.9)
+try=(10)
+codec=(G.711 GSM.AMR G.723.1)
+
+count=0
+setdest=~/ns-allinone-2.34/ns-2.34/indep-utils/cmu-scen-gen/setdest/setdest
+
+#####
+
+for i in "${mp[@]}"
+do
+        for j in "${min[@]}"
+        do  
+                for k in "${try[@]}"
+                do  
+    
+	#		echo "##"
+	#		echo "###"
+	#		echo "$setdest -v 2 -n 70 -s 2 -m $j -M ${max[$count]} -t 1200 -P 1 -p 20.0 -x 600 -y 600 > ./setdest/setdest-$i-$j-$k.tcl"
+	#		echo "###"
+	#		echo "##"       
+         #                           
+	#		$setdest -v 2 -n 70 -s 2 -m $j -M ${max[$count]} -t 1200 -P 1 -p 20.0 -x 600 -y 600 > ./setdest/setdest-$i-$j-$k.tcl
+                               for w in "${buff[@]}"
+                               do  
+    
+                                      for z in "${codec[@]}"
+                                       do  
+                                               echo "##"
+                                               echo " #  ns main.tcl $w $z $k $j $i  # "
+                                               echo "##"
+                                               ns main.tcl $w $z $k $j $i
+                                       done
+                               done
+
+                done
+                count=$(($count+1))
+        done
+done
+
