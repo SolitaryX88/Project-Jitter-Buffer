@@ -14,7 +14,7 @@ set val(seed)           5.0
 set val(adhocRouting)   AODV
 set val(nn)            	70
 set val(stop)           1200.0     
-set val(cp)           	"./cbr-tcp/default.v2.tcl" ;#r[lindex $argv 3]-s[lindex $argv 2].tcl";
+set val(cp)           	"./cbr-tcp/default.v2.tcl" ;#s[lindex $argv 2].tcl";
 set val(sc)            	"./setdest/setdest-[lindex $argv 4]-[lindex $argv 3]-[lindex $argv 2].tcl";# 
 set val(vip)		"./voip.tcl"
 # M A I N
