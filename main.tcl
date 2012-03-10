@@ -1,4 +1,27 @@
+set opt(speed) 		[lindex $argv 0] ;# Simulation Speed
+set opt(try) 		[lindex $argv 1] ;# Replication id
+set opt(buffer) 	[lindex $argv 2] ;# Buffer type
+set opt(codec) 		[lindex $argv 3] ;# Codec used
+set opt(voipflows) 	[lindex $argv 4] ;# Number of correlated VoIP flows
+set opt(bgtraffic)	[lindex $argv 5] ;# Background traffic rate
 
+
+
+set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(voipflows)-R$opt(bgtraffic).output"
+
+if {[file exists $file] == 1} {
+	puts ""
+	puts "# # # FILE EXISTS!!! SKIPPING SIMULATION!"
+	puts ""
+	set skip [open file_skip a]
+	puts $skip "skiped: $file"
+	close $skip
+	exit 0
+
+} else {
+	puts "The output file does not exist. Cont. w/ Sim"
+	
+}
 
 set val(chan)       Channel/WirelessChannel
 set val(prop)       Propagation/TwoRayGround
@@ -13,9 +36,9 @@ set val(ifqlen)         50
 set val(seed)           5.0
 set val(adhocRouting)   AODV
 set val(nn)            	70
-set val(stop)           1200.0     
-set val(cp)           	"./cbr-tcp/default.v2.tcl" ;#s[lindex $argv 2].tcl";
-set val(sc)            	"./setdest/setdest-[lindex $argv 4]-[lindex $argv 3]-[lindex $argv 2].tcl";# 
+set val(stop)           4000.0     
+set val(cp)           	"./cbr-tcp/nobgt.tcl" ;
+set val(sc)            	"../setdest/setdest-m-$opt(speed)-$opt(try).tcl";# 
 set val(vip)		"./voip.tcl"
 # M A I N
 
@@ -24,10 +47,10 @@ set ns_		[new Simulator]
 set topo	[new Topography]
 $topo load_flatgrid $val(x) $val(y)
 
-set tracefile	[open main-out.tr w]
-set namtrace    [open main-out.nam w]
+set tracefile	[open "/dev/null" w]
+#set namtrace    [open main-out.nam w]
 $ns_ trace-all $tracefile
-$ns_ namtrace-all-wireless $namtrace $val(x) $val(y)
+#$ns_ namtrace-all-wireless $namtrace $val(x) $val(y)
 
 # SET G O D
 set god_ [create-god $val(nn)]
@@ -43,7 +66,7 @@ $ns_ node-config -adhocRouting $val(adhocRouting) \
                  -phyType $val(netif) \
                  -channelType $val(chan) \
 		 -topoInstance $topo \
-		 -agentTrace ON \
+		 -agentTrace OFF \
                  -routerTrace OFF \
                  -macTrace OFF 
 
