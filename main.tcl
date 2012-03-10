@@ -1,11 +1,3 @@
-#the arguments format: 
-
-if{[lindex $argv 0]== ""}{
-
-	exit 0;
-
-}
-
 set opt(speed) 		[lindex $argv 0] ;# Simulation Speed
 set opt(try) 		[lindex $argv 1] ;# Replication id
 set opt(buffer) 	[lindex $argv 2] ;# Buffer type
