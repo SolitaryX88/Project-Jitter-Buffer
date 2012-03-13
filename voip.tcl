@@ -70,17 +70,6 @@ set opt(static-delay)   0.08
 #
 # parse command-line options and store values into the $opt(.) hash
 #
-proc getopt {argc argv} {
-        global opt
-
-        for {set i 0} {$i < $argc} {incr i} {
-                set arg [lindex $argv $i]
-                if {[string range $arg 0 0] != "-"} continue
-
-                set name [string range $arg 1 end]
-                set opt($name) [lindex $argv [expr $i+1]]
-        }
-}
 
 #
 # print out options
@@ -457,7 +446,6 @@ proc scenario {} {
 #                            MAIN BODY                                       #
 ##############################################################################
 
-getopt $argc $argv
 init
 scenario
 if { $opt(debug) != "" } {

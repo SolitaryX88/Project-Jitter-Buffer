@@ -1,16 +1,45 @@
-set opt(speed) 		[lindex $argv 0] ;# Simulation Speed
-set opt(try) 		[lindex $argv 1] ;# Replication id
-set opt(buffer) 	[lindex $argv 2] ;# Buffer type
-set opt(codec) 		[lindex $argv 3] ;# Codec used
-set opt(voipflows) 	[lindex $argv 4] ;# Number of correlated VoIP flows
-set opt(bgtraffic)	[lindex $argv 5] ;# Background traffic rate
+
+# vim: syntax=tcl
+
+## The arguments formats:
+# A) 	main.tcl {speed} {the replication setdest file} {buffer type} {codec} {the number of the voip flows} {the bg traffic} 
+# B)	main.tcl -speed {speed} -try {the replication setdest file} -buffer {buffer type} -codec {codec} -voipflows {the number of the voip flows} -bgtraffic {the bg traffic} 
+#
+## IMPORTANT The first type requires to be in the right order !!! 
+## The second type of arguments doesnot require the arguements to be in the right order
+#
+
+proc getopt {argc argv} {
+	global opt
+
+	for {set i 0} {$i < $argc} {incr i} {
+		set arg [lindex $argv $i]
+		if {[string range $arg 0 0] != "-"} continue
+
+		set name [string range $arg 1 end]
+		set opt($name) [lindex $argv [expr $i+1]]
+	}
+}
 
 
+if {[string is double -strict [lindex $argv 0]]} {	
+	set opt(speed) 		[lindex $argv 0] ;# Simulation Speed
+	set opt(try) 		[lindex $argv 1] ;# Replication id
+	set opt(buffer) 	[lindex $argv 2] ;# Buffer type
+	set opt(codec) 		[lindex $argv 3] ;# Codec used
+	set opt(voipflows) 	[lindex $argv 4] ;# Number of correlated VoIP flows
+	set opt(bgtraffic)	[lindex $argv 5] ;# Background traffic rate
+
+} else {
+	
+	getopt $argc $argv
+
+}
 
 set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(voipflows)-R$opt(bgtraffic).output"
 
 if {[file exists $file] == 1} {
-	puts ""
+	
 	puts "# # # FILE EXISTS!!! SKIPPING SIMULATION!"
 	puts ""
 	set skip [open file_skip a]
@@ -37,7 +66,7 @@ set val(seed)           5.0
 set val(adhocRouting)   AODV
 set val(nn)            	70
 set val(stop)           4000.0     
-set val(cp)           	"./cbr-tcp/nobgt.tcl" ;
+set val(cp)		"./cbr-tcp/nobgt.tcl" ;
 set val(sc)            	"../setdest/setdest-m-$opt(speed)-$opt(try).tcl";# 
 set val(vip)		"./voip.tcl"
 # M A I N
@@ -83,12 +112,17 @@ source $val(sc)
 puts "Loading VoIP Scenario File..."
 source $val(vip)
 
+
 for {set i 0} {$i < $val(nn)} {incr i} {
     $ns_ at $val(stop).0 "$node_($i) reset";
     $ns_ initial_node_pos $node_($i) 20
 }
-$ns_ initial_node_pos $node_(57) 40
-$ns_ initial_node_pos $node_(28) 40 
+
+#$ns_ initial_node_pos $node_(57) 40
+#$ns_ initial_node_pos $node_(28) 40 
+
+
+
 
 $ns_ at  $val(stop).0002 "puts \"NS EXITING...\" ; $ns_ halt"
 
@@ -100,5 +134,10 @@ puts $tracefile "M 0.0 sc $val(sc) cp $val(cp) seed $val(seed)"
 puts $tracefile "M 0.0 prop $val(prop) ant $val(ant)"
 
 puts "Starting Simulation..."
+
+
 $ns_ run
+
+
+
 
