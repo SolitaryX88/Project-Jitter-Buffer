@@ -1,6 +1,5 @@
-
 # vim: syntax=tcl
-
+#
 ## The arguments formats:
 # A) 	main.tcl {speed} {the replication setdest file} {buffer type} {codec} {the number of the voip flows} {the bg traffic} 
 # B)	main.tcl -speed {speed} -try {the replication setdest file} -buffer {buffer type} -codec {codec} -voipflows {the number of the voip flows} -bgtraffic {the bg traffic} 
@@ -40,7 +39,7 @@ set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(v
 
 if {[file exists $file] == 1} {
 	
-	puts "# # # FILE EXISTS!!! SKIPPING SIMULATION!"
+	puts "# Output file exists! SKIPPING SIMULATION!"
 	puts ""
 	set skip [open file_skip a]
 	puts $skip "skiped: $file"
@@ -66,7 +65,7 @@ set val(seed)           5.0
 set val(adhocRouting)   AODV
 set val(nn)            	70
 set val(stop)           4000.0     
-set val(cp)		"./cbr-tcp/nobgt.tcl" ;
+set val(cp)		"./cbr-tcp/$opt(bgtraffic).tcl" ;
 set val(sc)            	"../setdest/setdest-m-$opt(speed)-$opt(try).tcl";# 
 set val(vip)		"./voip.tcl"
 # M A I N
@@ -118,14 +117,12 @@ for {set i 0} {$i < $val(nn)} {incr i} {
     $ns_ initial_node_pos $node_($i) 20
 }
 
+# Change Node size
 #$ns_ initial_node_pos $node_(57) 40
 #$ns_ initial_node_pos $node_(28) 40 
 
 
-
-
 $ns_ at  $val(stop).0002 "puts \"NS EXITING...\" ; $ns_ halt"
-
 
 puts $tracefile "M 0.0 nn $val(nn) x $val(x) y $val(y) rp $val(adhocRouting)"
 
@@ -137,7 +134,4 @@ puts "Starting Simulation..."
 
 
 $ns_ run
-
-
-
 
