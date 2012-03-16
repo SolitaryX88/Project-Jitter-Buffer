@@ -4,7 +4,7 @@
 # A) 	main.tcl {speed} {the replication setdest file} {buffer type} {codec} {the number of the voip flows} {the bg traffic} 
 # B)	main.tcl -speed {speed} -try {the replication setdest file} -buffer {buffer type} -codec {codec} -voipflows {the number of the voip flows} -bgtraffic {the bg traffic} 
 #
-## IMPORTANT The first type requires to be in the right order !!! 
+## IMPORTANT The first type of arguements requires to be in the right order !!! 
 ## The second type of arguments doesnot require the arguements to be in the right order
 #
 
@@ -102,7 +102,7 @@ $ns_ node-config -adhocRouting $val(adhocRouting) \
 for {set i 0} {$i < $val(nn) } {incr i} {
 	set node_($i) [$ns_ node]	
 	$node_($i) random-motion 0
-	#Xωρίς τυχαία κίνηση
+	#Without random motion
 	}
 puts "Loading connection pattern..."
 source $val(cp)
