@@ -32,7 +32,7 @@ if {[string is double -strict [lindex $argv 0]]} {
 } else {
 	
 	getopt $argc $argv
-
+	
 }
 
 set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(voipflows)-R$opt(bgtraffic).output"
@@ -48,7 +48,7 @@ if {[file exists $file] == 1} {
 
 } else {
 	puts "The output file does not exist. Cont. w/ Sim"
-	
+	exec touch $file
 }
 
 set val(chan)       Channel/WirelessChannel
