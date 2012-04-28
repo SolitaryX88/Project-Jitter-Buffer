@@ -1,12 +1,17 @@
 # vim: syntax=tcl
 #
+
+##############################################################################
+##                       MAIN CONFIGURATION FILES                           ##
+##############################################################################
+
+#
 ## The arguments formats:
-# A) 	main.tcl {speed} {the replication setdest file} {buffer type} {codec} {the number of the voip flows} {the bg traffic} 
-# B)	main.tcl -speed {speed} -try {the replication setdest file} -buffer {buffer type} -codec {codec} -voipflows {the number of the voip flows} -bgtraffic {the bg traffic} 
+# A) 	main.tcl {speed} {the replication setdest file} {buffer type} {codec} {the number of the voip flows} {the bg traffic} {routing algorithm} 
+# B)	main.tcl -speed {speed} -try {the replication setdest file} -buffer {buffer type} -codec {codec} -voipflows {the number of the voip flows} -bgtraffic {the bg traffic} -routing {routing algorithm}
 #
 ## IMPORTANT The first type of arguements requires to be in the right order !!! 
 ## The second type of arguments doesnot require the arguements to be in the right order
-#
 
 proc getopt {argc argv} {
 	global opt
@@ -28,6 +33,7 @@ if {[string is double -strict [lindex $argv 0]]} {
 	set opt(codec) 		[lindex $argv 3] ;# Codec used
 	set opt(voipflows) 	[lindex $argv 4] ;# Number of correlated VoIP flows
 	set opt(bgtraffic)	[lindex $argv 5] ;# Background traffic rate
+	set opt(routing)	[lindex $argv 6] ;# Routing algorithms	
 
 } else {
 	
@@ -35,7 +41,7 @@ if {[string is double -strict [lindex $argv 0]]} {
 	
 }
 
-set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(voipflows)-R$opt(bgtraffic).output"
+set file "outputs/out-S$opt(speed)-T$opt(try)-B$opt(buffer)-C$opt(codec)-V$opt(voipflows)-R$opt(bgtraffic)-R$opt(routing).output"
 
 if {[file exists $file] == 1} {
 	
@@ -62,12 +68,28 @@ set val(x)              600
 set val(y)              600 
 set val(ifqlen)         50 
 set val(seed)           5.0
-set val(adhocRouting)   AODV
+set val(adhocRouting)   $opt(routing)
 set val(nn)            	70
 set val(stop)           4000.0     
 set val(cp)		"./cbr-tcp/$opt(bgtraffic).tcl" ;
 set val(sc)            	"../setdest/setdest-m-$opt(speed)-$opt(try).tcl";# 
 set val(vip)		"./voip.tcl"
+
+# R O U T I N G
+
+if {$opt(routing) == "OLSR" } {
+        Agent/OLSR set use_mac_    true
+        #Agent/OLSR set debug_             true    
+        #Agent/OLSR set willingness 3
+        Agent/OLSR set hello_ival_ 10
+        Agent/OLSR set tc_ival_    25
+}
+
+if {$opt(routing) == "DSR" } {
+        set val(ifq) CMUPriQueue
+}
+
+
 # M A I N
 
 set ns_		[new Simulator]
