@@ -1,6 +1,6 @@
 # vim: syntax=tcl
 #
-
+# The following TCL Script is a modification of the original TCL example script of the ns2VoIP++ patch.
 ##############################################################################
 ##                       VOIP CONFIGURATION OF PARAMETERS                   ##
 ##############################################################################
@@ -452,5 +452,4 @@ if { $opt(debug) != "" } {
         printopt
 }
 alive
-
 #$ns_ run
